@@ -7,7 +7,7 @@ import WeatherIllustration from './WeatherIllustration';
 const WeatherCard = ({ weatherData }) => {
   if (!weatherData) return null;
 
-  const { cityName, country, temperature, condition, icon } = weatherData;
+  const { cityName, country, temperature, condition, icon, isDay = true } = weatherData;
   const isImageUrl = typeof icon === 'string' && icon.startsWith('http');
 
   return (
@@ -24,11 +24,7 @@ const WeatherCard = ({ weatherData }) => {
       </View>
 
       <View style={styles.illustrationWrapper}>
-        {isImageUrl ? (
-          <Image source={{ uri: icon }} style={styles.weatherIconImage} resizeMode="contain" />
-        ) : (
-          <WeatherIllustration type={condition || 'sun'} size={124} />
-        )}
+        <WeatherIllustration type={condition || 'Clear'} isDay={isDay} size={124} />
       </View>
 
       <View style={styles.tempContainer}>

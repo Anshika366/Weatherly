@@ -69,55 +69,57 @@ const HomeScreen = () => {
 
         <SearchBar onSearch={handleSearch} isLoading={isLoading} />
 
-        {!weatherData && !isLoading && !error && (
-          <View style={styles.welcomeScene}>
-            <View style={styles.illustrationWrapper}>
-              <WeatherIllustration type="sun" size={100} />
+        <View style={styles.bodyWrapper}>
+          {!weatherData && !isLoading && !error && (
+            <View key="welcome" style={styles.welcomeScene}>
+              <View style={styles.illustrationWrapper}>
+                <WeatherIllustration type="sun" size={100} />
+              </View>
+              <Text style={styles.welcomeTitle}>Discover your weather</Text>
+              <Text style={styles.welcomeSubtitle}>
+                Search any city to see current conditions.
+              </Text>
+
+              <View style={styles.quickSearchDivider}>
+                <Text style={styles.quickSearchLabel}>POPULAR CITIES</Text>
+              </View>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.chipContainer}
+              >
+                {POPULAR_CITIES.map((city) => (
+                  <TouchableOpacity
+                    key={city}
+                    style={styles.chip}
+                    onPress={() => handleSearch(city)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.chipText}>{city}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
-            <Text style={styles.welcomeTitle}>Discover your weather</Text>
-            <Text style={styles.welcomeSubtitle}>
-              Search any city to see current conditions.
-            </Text>
+          )}
 
-            <View style={styles.quickSearchDivider}>
-              <Text style={styles.quickSearchLabel}>POPULAR CITIES</Text>
+          {isLoading && <LoadingView key="loading" />}
+
+          {error && !isLoading && (
+            <ErrorView key="error" message={error} onRetry={lastSearchedCity ? handleRetry : null} />
+          )}
+
+          {weatherData && !isLoading && !error && (
+            <View key="results" style={styles.resultsContainer}>
+              <WeatherCard weatherData={weatherData} />
+              <WeatherDetailsCard
+                humidity={weatherData.humidity}
+                windSpeed={weatherData.windSpeed}
+                feelsLike={weatherData.feelsLike}
+              />
             </View>
-
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.chipContainer}
-            >
-              {POPULAR_CITIES.map((city) => (
-                <TouchableOpacity
-                  key={city}
-                  style={styles.chip}
-                  onPress={() => handleSearch(city)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.chipText}>{city}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {isLoading && <LoadingView />}
-
-        {error && !isLoading && (
-          <ErrorView message={error} onRetry={lastSearchedCity ? handleRetry : null} />
-        )}
-
-        {weatherData && !isLoading && !error && (
-          <View style={styles.resultsContainer}>
-            <WeatherCard weatherData={weatherData} />
-            <WeatherDetailsCard
-              humidity={weatherData.humidity}
-              windSpeed={weatherData.windSpeed}
-              feelsLike={weatherData.feelsLike}
-            />
-          </View>
-        )}
+          )}
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -136,6 +138,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 24,
     paddingBottom: 40,
+  },
+  bodyWrapper: {
+    width: '100%',
   },
   headerRow: {
     marginBottom: 20,
